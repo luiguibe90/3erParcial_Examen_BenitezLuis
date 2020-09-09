@@ -3,6 +3,8 @@ const sql = require('../util/database.js');
 
 
 const subcategoria = function (subcategoria) {
+  // this.cod_categoria = subcategoria.cod_categoria;
+  // this.cod_subcategoria = subcategoria.cod_subcategoria; 
   this.nombre = subcategoria.nombre;
   this.descripcion = subcategoria.descripcion;
   this.fecha_creacion = subcategoria.fecha_creacion;
