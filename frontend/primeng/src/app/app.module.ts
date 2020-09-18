@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
-import { PersonaComponent } from './persona/persona.component';
+import {SubcategoriaComponent} from './subcategoria/subcategoria.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PanelModule } from 'primeng/panel';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,14 +17,17 @@ import {ToastModule} from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
-import { SubcategoriaComponent } from './subcategoria/subcategoria.component'
+import {DropdownModule} from 'primeng/dropdown';
+import {CalendarModule} from 'primeng/calendar';
+
+
+
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PersonaComponent,
     SubcategoriaComponent
   ],
   imports: [
@@ -40,7 +43,9 @@ import { SubcategoriaComponent } from './subcategoria/subcategoria.component'
     InputTextModule,
     ButtonModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DropdownModule,
+    CalendarModule
   ],
   providers: [
     MessageService,

@@ -7,10 +7,11 @@ exports.create = (req, res) => {
         });
     }
     const subcategoria = new subCategoria({
-        nombre: req.body.nombre,
-        descripcion: req.body.descripcion,
-        fecha_creacion: req.body.fecha_creacion,
-        cod_categoria: req.body.cod_categoria
+        COD_SUB_CATEGORIA: req.body.COD_SUB_CATEGORIA,
+        COD_CATEGORIA: req.body.COD_CATEGORIA,        
+        NOMBRE: req.body.NOMBRE,
+        DESCRIPCION: req.body.DESCRIPCION,
+        FECHA_CREACION: req.body.FECHA_CREACION
     });
     subCategoria.create(subcategoria, (err, data) => {
         if (err)
@@ -33,15 +34,15 @@ exports.findAll = (req, res) => {
     });
 };
 exports.findOne = (req, res) => {
-    subCategoria.findById(req.params.cod_categoria, (err, data) => {
+    subCategoria.findById(req.params.cod_sub_categoria, (err, data) => {
         if (err) {
             if (err.kind == "not_found") {
                 res.status(404).send({
-                    message: `not found Product with id ${req.params.cod_categoria}.`
+                    message: `not found subCategoria with id ${req.params.cod_sub_categoria}.`
                 });
             } else {
                 res.status(500).send({
-                    message: "Error al recuperar el producto con id" + req.params.cod_categoria
+                    message: "Error al recuperar el producto con id" + req.params.cod_sub_categoria
                 });
             }
         } else res.send(data);
@@ -49,17 +50,19 @@ exports.findOne = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    subCategoria.remove(req.params.cod_categoria, (err, data) => {
+    subCategoria.remove(req.params.cod_sub_categoria, (err, data) => {
         if (err) {
             if (err.kind == "no econtrado") {
                 res.status(404).send({
-                    message: `codigo categoria no encontrado ${REQ.PARAMS.cod_categoria}`
+                    message: `Not found subcategoria WITH Codsucategoria ${req.params.cod_sub_categoria}`
                 });
             } else {
                 res.status(509).send({
-                    message: "No se pudo eliminar categoria: " + req.params.cod_categoria
+                    message: "No se pudo eliminar el cliente codigo: " + req.params.cod_sub_categoria
                 });
             }
-        } else res.send({ message: `categoria eliminada!` });
+        } else res.send({ message: `Producto elimnado satisfactoriamente!` });
     });
 };
+
+

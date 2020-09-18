@@ -1,10 +1,10 @@
 const mysql = require('mysql2');
 
 const pool = mysql.createPool({
-    host: 'sschoodb.mysql.database.azure.com',
-    user: 'adminschoolar@sschoodb',
-    database: 'examendb',
-    password: 'Admin+123'
+    host: '127.0.0.1',
+    user: 'root',
+    database: 'examenweb',
+    password: 'admin123'
 });
 
 

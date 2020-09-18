@@ -1,4 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Subcategoria } from 'src/model/subcategoria';
+import { SubcategoriaService } from '../service/subcategoria.service';
+import { CategoriaService } from '../service/categoria.service';
+import { MenuItem } from 'primeng/components/common/menuitem';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
+// import { SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng/api';
+import { stringify } from 'querystring';
+
+
 
 @Component({
   selector: 'app-subcategoria',
@@ -7,174 +18,162 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SubcategoriaComponent implements OnInit {
 
-  constructor() { }
-
-
-
-  constructor(private subcategoriaService: subcategoriaService, private messageService: MessageService, private confirmService: ConfirmationService) { }
-  ngOnInit() {
-  }
-  getAll() {
-    this.subcategoriaService.getAll().subscribe(
-      (result: any) => {
-        let subcategoriaService: Persona[] = [];
-        for (let i = 0; i < result.length; i++) {
-          let persona = result[i] as Persona;
-          subcategoriaService.push(persona);
-        }
-        this.subcategoriaService = subcategoriaService;
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }
-
-
-
-
-
-
-
-  /////
-
-  personas: Persona[];
+  subcategorias: Subcategoria[];
+  selectedOption: string;
   cols: any[];
   items: MenuItem[];
+  cities: SelectItem[];
+  catselected: string;
+  categorias = [];
+  previousVal: any;
+  currentVal: string;
+  // tslint:disable-next-line:no-inferrable-types
   displaySaveDialog: boolean = false;
-  persona: Persona = {
-    id: null,
-    nombre: null,
-    apellido: null,
-    direccion: null,
-    telefono: null
+  Subcategoria: Subcategoria = {
+    COD_SUB_CATEGORIA: null,
+    COD_CATEGORIA: null,
+    NOMBRE: null,
+    DESCRIPCION: null,
+    FECHA_CREACION: null
   };
 
-  selectedPersona: Persona = {
-    id: null,
-    nombre: null,
-    apellido: null,
-    direccion: null,
-    telefono: null
+  selectedSubcategoria: Subcategoria = {
+    COD_SUB_CATEGORIA: null,
+    COD_CATEGORIA: null,
+    NOMBRE: null,
+    DESCRIPCION: null,
+    FECHA_CREACION: null
   };
 
-  constructor(private personaService: PersonaService, private messageService: MessageService, private confirmService: ConfirmationService) { }
+  onSelectType(event) {
+    if (event) {
+      this.previousVal = this.currentVal;
+      this.currentVal = event;
+      this.catselected = this.currentVal;
+    }
+    console.log('this.previousVal', this.previousVal);
+    console.log('this.currentVal', this.catselected);
+    this.getAll(this.catselected);
+    this.cols = [
+      { field: 'COD_SUB_CATEGORIA', header: 'CODIGO' },
+      { field: 'NOMBRE', header: 'NOMBRE' },
+      { field: 'FECHA_CREACION', header: 'FECHA CREACION' },
+    ];
+  }
 
-  getAll() {
-    this.personaService.getAll().subscribe(
+  constructor(private subcategoriaservice: SubcategoriaService,
+              private messageService: MessageService,
+              private confirmService: ConfirmationService,
+              private categoriaservice: CategoriaService) { }
+
+  getAll(id: string) {
+    this.subcategoriaservice.getAllSubcategory(id).subscribe(
       (result: any) => {
-        let personas: Persona[] = [];
+        const subcategorias: Subcategoria[] = [];
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < result.length; i++) {
-          let persona = result[i] as Persona;
-          personas.push(persona);
+          const subcategoria = result[i] as Subcategoria;
+          subcategorias.push(subcategoria);
         }
-        this.personas = personas;
+        this.subcategorias = subcategorias;
+        console.log(subcategorias);
       },
       error => {
         console.log(error);
       }
     );
+  }
+  getAllCategories() {
+    this.categoriaservice.getAll().subscribe((categorias) => {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < categorias.length; i++) {
+      this.cities.push({label: categorias[i].DESCRIPCION, value: categorias[i].COD_CATEGORIA});
+      console.log(categorias);
+     }
+    });
+  }
+  delete() {
+    if (this.selectedSubcategoria == null || this.selectedSubcategoria.COD_SUB_CATEGORIA == null) {
+      return;
+    }
+    this.confirmService.confirm({
+      message: '¿Eliminar?',
+      accept : () => {
+        this.subcategoriaservice.delete(this.selectedSubcategoria.COD_SUB_CATEGORIA).subscribe(
+          (result: any) => {
+            this.deleteObject(result.id2);
+          }
+        );
+      }
+    });
+  }
+  deleteObject(COD_SUB_CATEGORIA: string) {
+    // tslint:disable-next-line:prefer-const
+    let index = this.subcategorias.findIndex((e) => e.COD_SUB_CATEGORIA === COD_SUB_CATEGORIA);
+    if (index !== -1) {
+      this.subcategorias.splice(index, 1);
+    }
   }
 
   showSaveDialog(editar: boolean) {
     if (editar) {
-      if (this.selectedPersona != null && this.selectedPersona.id != null) {
-        this.persona = this.selectedPersona;
-      }else{
-        this.messageService.add({severity : 'warn', summary: "Advertencia!", detail: "Por favor seleccione un registro"});
+      if (this.selectedSubcategoria != null && this.selectedSubcategoria.COD_SUB_CATEGORIA != null) {
+        this.Subcategoria = this.selectedSubcategoria;
+      } else {
+
         return;
       }
     } else {
-      this.persona = new Persona();
+      this.Subcategoria = new Subcategoria();
     }
     this.displaySaveDialog = true;
   }
-
   save() {
-    this.personaService.save(this.persona).subscribe(
+    this.subcategoriaservice.Insert(this.Subcategoria).subscribe(
       (result: any) => {
-        let persona = result as Persona;
-        this.validarPersona(persona);
-        this.messageService.add({ severity: 'success', summary: "Resultado", detail: "Se guardó la persona correctamente." });
+        const subcategoria = result as Subcategoria;
+        this.validarPersona(subcategoria);
         this.displaySaveDialog = false;
-
       },
       error => {
         console.log(error);
       }
     );
   }
+  validarPersona(subcategoria: Subcategoria) {
 
-  delete(){
-    if(this.selectedPersona == null || this.selectedPersona.id == null){
-      this.messageService.add({severity : 'warn', summary: "Advertencia!", detail: "Por favor seleccione un registro"});
-      return;
-    }
-    this.confirmService.confirm({
-      message: "¿Está seguro que desea eliminar el registro?",
-      accept : () =>{
-        this.personaService.delete(this.selectedPersona.id).subscribe(
-          (result:any) =>{
-            this.messageService.add({ severity: 'success', summary: "Resultado", detail: "Se eliminó la persona con id "+result.id+" correctamente." });
-            this.deleteObject(result.id);
-          }
-        )
-      }
-    })
-  }
+    // tslint:disable-next-line:prefer-const
+    let index = this.subcategorias.findIndex((e) => e.COD_SUB_CATEGORIA === subcategoria.COD_SUB_CATEGORIA);
 
-  deleteObject(id:number){
-    let index = this.personas.findIndex((e) => e.id == id);
-    if(index != -1){
-      this.personas.splice(index, 1);
-    }
-  }
-
-  validarPersona(persona: Persona){
-    let index = this.personas.findIndex((e) => e.id == persona.id);
-
-    if(index != -1){
-      this.personas[index] = persona;
-    }else{
-      this.personas.push(persona);
-
+    // tslint:disable-next-line:triple-equals
+    if (index != -1) {
+      this.subcategorias[index] = subcategoria;
+    } else {
+      this.subcategorias.push(subcategoria);
     }
 
   }
 
   ngOnInit() {
-    this.getAll();
-    this.cols = [
-      { field: "id", header: "ID" },
-      { field: "nombre", header: "Nombre" },
-      { field: "apellido", header: "Apellido" },
-      { field: "direccion", header: "Dirección" },
-      { field: "telefono", header: "Teléfono" },
-    ];
+    this.cities = [];
+    this.cities.push({label: 'Categoria', value: -1});
+    this.getAllCategories();
+    // tslint:disable-next-line:no-unused-expression
+    this.onSelectType;
 
     this.items = [
       {
-        label: "Nuevo",
-        icon: 'pi pi-fw pi-plus',
+        label: 'Crear',
         command: () => this.showSaveDialog(false)
       },
       {
-        label: "Editar",
-        icon: "pi pi-fw pi-pencil",
-        command: () => this.showSaveDialog(true)
+        label: 'Eliminar',
+        command: () => this.delete()
       },
       {
-        label: "Eliminar",
-        icon: "pi pi-fw pi-times",
-        command: () => this.delete()
-      }
-    ]
-
+        label: 'Detalles',
+        command: () => this.showSaveDialog(true)
+      },
+    ];
   }
-
 }
-
-
-
-
-

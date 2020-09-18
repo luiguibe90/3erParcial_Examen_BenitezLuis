@@ -1,69 +1,89 @@
 <div class="ui-g">
   <p-toast></p-toast>
-  <p-confirmDialog header="Confirmación" acceptLabel="Si" rejectLabel="No" icon="pi pi-exclamation-triangle"></p-confirmDialog>
-  <p-panel header="Administración de Personas" [style]="{width: '70%', margin: '0 auto'}">
-      <div style="margin-bottom: 20px">
-          <p-menubar [model]="items"></p-menubar>
-      </div>
-      <p-table [value]="personas" [columns]="cols" [responsive]="true" selectionMode="single" [(selection)]="selectedPersona"
-          dataKey="id" [paginator]="true" [rows]="15">
-          <ng-template pTemplate="header" let-columns>
-              <tr>
-                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                      {{col.header}}
-                      <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
-                  </th>
-              </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-persona let-columns="columns">
-              <tr [pSelectableRow]="persona">
-                  <td *ngFor="let col of columns">
-                      {{persona[col.field]}}
-                  </td>
-              </tr>
-          </ng-template>
-      </p-table>
+  <p-confirmDialog header="" acceptLabel="Aceptar" rejectLabel="Cancelar">
+  </p-confirmDialog>
+  <p-panel header="Gestion de Sub-Categorias">
+    <p-dropdown [options]="cities" [(ngModel)]="catselected" (ngModelChange)="onSelectType($event)"></p-dropdown>
+    <br>
+    <p-toast></p-toast>
+    <div style="margin-bottom: 20px">
+      <p-menubar [model]="items"></p-menubar>
+    </div>
+    <p-table [value]="subcategorias" [columns]="cols" [responsive]="true" selectionMode="single"
+      [(selection)]="selectedSubcategoria" dataKey="COD_SUB_CATEGORIA" [paginator]="true" [rows]="15">
+
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+            {{col.header}}
+            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+              ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order">
+            </p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-subcategoria let-columns="columns">
+        <tr [pSelectableRow]="subcategoria">
+          <td *ngFor="let col of columns">
+            {{subcategoria[col.field]}}
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
   </p-panel>
-  <p-dialog header="Persona" [responsive]="true" [style]="{width: '400px'}" [(visible)]="displaySaveDialog"
-      [modal]="true">
-      <div class="ui-g ui-fluid">
-          <div class="ui-g-12">
-              <div class="ui-g-4">
-                  <label for="nombre">Nombre</label>
-              </div>
-              <div class="ui-g-8">
-                  <input pInputText id="nombre" [(ngModel)]="persona.nombre" />
-              </div>
-          </div>
-          <div class="ui-g-12">
-              <div class="ui-g-4">
-                  <label for="apellido">Apellido</label>
-              </div>
-              <div class="ui-g-8">
-                  <input pInputText id="apellido" [(ngModel)]="persona.apellido" />
-              </div>
-          </div>
-          <div class="ui-g-12">
-              <div class="ui-g-4">
-                  <label for="direccion">Dirección</label>
-              </div>
-              <div class="ui-g-8">
-                  <input pInputText id="direccion" [(ngModel)]="persona.direccion" />
-              </div>
-          </div>
-          <div class="ui-g-12">
-              <div class="ui-g-4">
-                  <label for="telefono">Teléfono</label>
-              </div>
-              <div class="ui-g-8">
-                  <input pInputText id="telefono" [(ngModel)]="persona.telefono" />
-              </div>
-          </div>
+  <p-dialog header="Subcategoria" [responsive]="true" [style]="{width: '400px'}" [(visible)]="displaySaveDialog"
+    [modal]="true">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="COD_CATEGORIA">Código Categoria</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="COD_CATEGORIA" [(ngModel)]="Subcategoria.COD_CATEGORIA" />
+        </div>
       </div>
-      <p-footer>
-          <div class="ui-dialog-buttonpane ui-helper-clearfix">
-              <button type="button" pButton icon="pi pi-check" (click)="save()" label="Guardar"></button>
-          </div>
-      </p-footer>
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="COD_SUB_CATEGORIA">Código Subcategoria</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="COD_SUB_CATEGORIA" [(ngModel)]="Subcategoria.COD_SUB_CATEGORIA" />
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="NOMBRE">Nombre</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="NOMBRE" [(ngModel)]="Subcategoria.NOMBRE" />
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="DESCRIPCION">Descripción</label>
+        </div>
+        <div class="ui-g-8">
+          <input pInputText id="DESCRIPCION" [(ngModel)]="Subcategoria.DESCRIPCION" />
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-4">
+          <label for="FECHA_CREACION">Fecha de Creación</label>
+        </div>
+        <div class="ui-g-12">
+          <p-calendar [(ngModel)]="Subcategoria.FECHA_CREACION" dateFormat="yy-mm-dd" inputId="spanish"
+            dataType="string"></p-calendar>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="pi pi-check" (click)="save()" label="Crear"></button>
+      </div>
+    </p-footer>
   </p-dialog>
+
+
+
 </div>
